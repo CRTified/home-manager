@@ -21,6 +21,11 @@ let
           type = "${v.type}";
           nick = "${quoteStr v.nick}";
           autosendcmd = "${concatMapStringsSep ";" quoteStr v.autoCommands}";
+          ${optionalString v.sasl.enable ''
+          sasl_mechanism = "${v.sasl.mechanism}";
+          sasl_username = "${v.sasl.username}";
+          sasl_password = "${v.sasl.password}";
+          ''}
         };
       ''));
 
@@ -104,6 +109,31 @@ let
           type = types.int;
           default = 6667;
           description = "Port of the chat server.";
+        };
+
+        sasl = {
+          enable = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Whether SASL should be used.";
+          };
+
+          mechanism = mkOption {
+            type = types.str;
+            default = "PLAIN";
+            description = "The SASL mechanism used for authentication.";
+          };
+
+          username = mkOption {
+            type = types.str;
+            description = "The SASL username used for authentication.";
+          };
+
+          password = mkOption {
+            type = types.str;
+            default = "PLAIN";
+            description = "The SASL password used for authentication.";
+          };
         };
 
         ssl = {
